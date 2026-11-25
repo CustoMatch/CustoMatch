@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Match - Registro e Inicio de Sesión</title>
+  <!-- Iconos de FontAwesome y fuente Inter -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --navy-dark: #102a43;
+      --navy-primary: #143656;
+      --navy-hover: #0d253c;
+      --bg-light: #f4f7fa;
+      --text-main: #1f2933;
+      --text-muted: #616e7c;
+      --border-color: #d9e2ec;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      background-color: var(--bg-light);
+    }
+
+    /* Contenedor Principal dividido en 2 columnas */
+    .split-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* ================= COLUMNA IZQUIERDA (Branding + Buque) ================= */
+    .left-panel {
+      flex: 0.95;
+      position: relative;
+      background: linear-gradient(
+        180deg,
+        rgba(16, 42, 67, 0.88) 0%,
+        rgba(20, 54, 86, 0.80) 50%,
+        rgba(16, 42, 67, 0.92) 100%
+      ),
+      url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 3.5rem;
+    }
+
+    .brand-logo {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Icono SVG personalizado estilo barco/escudo */
+    .brand-logo svg {
+      width: 58px;
+      height: 58px;
+    }
+
+    .left-panel h1 {
+      font-size: 2.75rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .left-panel p {
+      font-size: 1.05rem;
+      color: #d9e2ec;
+      line-height: 1.5;
+      max-width: 300px;
+    }
+
+    /* ================= COLUMNA DERECHA (Formulario) ================= */
+    .right-panel {
+      flex: 1.25;
+      background-color: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* Selector de Pestañas (Iniciar sesión / Registrarse) */
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 0.9rem 1rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--navy-primary);
+    }
+
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--navy-primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Campos del Formulario */
+    .form-group {
+      margin-bottom: 1.1rem;
+      position: relative;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 1rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--white);
+      font-size: 0.95rem;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--navy-primary);
+      box-shadow: 0 0 0 3px rgba(20, 54, 86, 0.1);
+    }
+
+    select.form-control {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    /* Opciones debajo de contraseña */
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      margin: 0.75rem 0 1.5rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      accent-color: var(--navy-primary);
+      width: 15px;
+      height: 15px;
+    }
+
+    .forgot-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--navy-primary);
+      text-decoration: underline;
+    }
+
+    /* Botón Principal */
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      background-color: var(--navy-primary);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--navy-hover);
+    }
+
+    /* Separador "o continúa con" */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .divider span {
+      padding: 0 0.75rem;
+    }
+
+    /* Botones Sociales (Google, Apple, LinkedIn) */
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background-color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .social-google { color: #db4437; }
+    .social-apple { color: #000000; }
+    .social-linkedin { color: #0a66c2; }
+
+    /* Texto inferior de cambio de modo */
+    .switch-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .switch-text a {
+      color: var(--navy-primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .switch-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* Ocultar formulario inactivo */
+    .hidden {
+      display: none;
+    }
+
+    /* Responsive para móviles */
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+      }
+      .left-panel {
+        padding: 2.5rem 2rem;
+        text-align: center;
+        align-items: center;
+      }
+      .left-panel h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-container">
+    
+    <!-- Panel Izquierdo: Identidad de Marca -->
+    <div class="left-panel">
+      <div class="brand-logo">
+        <!-- Logo vectorial de Custom Match -->
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 6L54 16V32C54 45.5 44.6 56.8 32 60C19.4 56.8 10 45.5 10 32V16L32 6Z" stroke="white" stroke-width="3.5" stroke-linejoin="round"/>
+          <path d="M18 37L32 31L46 37L42 45H22L18 37Z" fill="white"/>
+          <rect x="25" y="23" width="14" height="7" rx="1" fill="white"/>
+          <path d="M16 50C21 48 26 52 32 50C38 48 43 52 48 50" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1>Custom<br>Match</h1>
+      <p>Tu aliado en el comercio internacional</p>
+    </div>
+
+    <!-- Panel Derecho: Formularios -->
+    <div class="right-panel">
+      <div class="auth-card">
+        
+        <!-- Pestañas superiores -->
+        <div class="tabs">
+          <button type="button" class="tab-btn" id="tab-login" onclick="switchMode('login')">Iniciar sesión</button>
+        </div>
+
+
+        <!-- ==================== FORMULARIO DE INICIO DE SESIÓN (Idéntico al mockup #2) ==================== -->
+        <form method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <div class="input-wrapper">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="email" id="email" name="email" class="form-control" placeholder="Correo electrónico" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key"></i>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required>
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox-label">
+              <input type="checkbox">
+              <span>Recordar mi cuenta</span>
+            </label>
+            <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn-primary">Iniciar sesión</button>
+
+          <div class="divider"></div>
+
+          <p class="switch-text">
+            ¿No tienes cuenta? <a href="{% url 'crear_agente' %}">Regístrate</a>
+          </p>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>
